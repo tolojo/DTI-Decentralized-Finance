@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract DecentralizedFinance is ERC20{
-
+    address owner;
     uint256 rateETHtoDEX;
     uint256 maxLoadDate;
     struct Loan {         
@@ -24,25 +24,26 @@ contract DecentralizedFinance is ERC20{
         _mint(address(this), 10**30);
         rateETHtoDEX = 50;
         maxLoadDate = 30 days;
+        owner=msg.sender;
         // TODO: initialize
     }
 
     function buyDex() external payable {
         uint256 dexAmount = msg.value * rateETHtoDEX;
-        _mint(msg.sender, dexAmount);
+       //falta fazer melhor o buy dex
     }
 
     function sellDex(uint256 dexAmount) external {
         require(balanceOf(msg.sender) >= dexAmount, "Insufficient DEX balance");
         uint256 ethAmount = dexAmount / rateETHtoDEX;
-        address(this).transfer(dexAmount);
+        payable(address(this)).transfer(dexAmount);
         payable(msg.sender).transfer(ethAmount);
     }
 
     function loan(uint256 dexAmount, uint256 deadline) external {
         // TODO: implement this
 
-        emit loanCreated(msg.sender, loanAmount, deadline);
+        //emit loanCreated(msg.sender, loanAmount, deadline);
     }
 
     function returnLoan(uint256 ethAmount) external {
@@ -54,11 +55,12 @@ contract DecentralizedFinance is ERC20{
     }
 
     function setRateEthToDex(uint256 rate) external {
-        require(msg.sender==this.);
+        require(msg.sender==owner);
+        rateETHtoDEX = rate;
     }
 
     function getDex() public view returns (uint256) {
-        // TODO: implement this
+        return balanceOf(msg.sender);
     }
 
     function makeLoanRequestByNft(IERC721 nftContract, uint256 nftId, uint256 loanAmount, uint256 deadline) external {
@@ -72,7 +74,7 @@ contract DecentralizedFinance is ERC20{
     function loanByNft(IERC721 nftContract, uint256 nftId) external {
         // TODO: implement this
 
-        emit loanCreated(msg.sender, loanAmount, deadline);
+       // emit loanCreated(msg.sender, loanAmount, deadline);
     }
 
     function checkLoan(uint256 loanId) external {
