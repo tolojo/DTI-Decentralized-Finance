@@ -406,6 +406,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "numTokensPerWallet",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "ethAmount",
 						"type": "uint256"
@@ -640,11 +659,11 @@
 			]
 		},
 		"decentralized_finance.sol": {
-			"keccak256": "0xdac56cb2736194b442b5b4d8d67af4346e4d614a8243a4eadf6bad595b3604d7",
+			"keccak256": "0xab8542773104ffa7cba14fa93417fb0748ec0a099d185ee549f507e092a31609",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f41d6678843c7017a97842e0f067eba056b5aac6ad9abf49b60e75c4338b1245",
-				"dweb:/ipfs/QmeRwsniN646eCHS8UMxBikRxhk7wafdVwKgpBzGrNjZGC"
+				"bzz-raw://e1c2aab440f3ce49b549fd6502263666ede54b9bfcf1136e647080bc049a9188",
+				"dweb:/ipfs/QmZsT8UcTvGPAzn1dNhWuERJF7CrcuPD6a2qwagjVBoUhM"
 			]
 		}
 	},

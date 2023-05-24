@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 contract DecentralizedFinance is ERC20{
     address owner;
-    uint256 rateETHtoDEX;
+    uint256 rateWEItoDEX;
     uint256 maxLoadDate;
     struct Loan {         
         uint256 deadline;         
@@ -18,26 +18,28 @@ contract DecentralizedFinance is ERC20{
         uint256 nftId;     
         }
     mapping(uint256 => Loan) public loans;
+    mapping(address => uint256) public numTokensPerWallet;
     event loanCreated(address indexed borrower, uint256 amount, uint256 deadline);
 
     constructor() ERC20("DEX", "DEX") {
         _mint(address(this), 10**30);
-        rateETHtoDEX = 50;
+        rateWEItoDEX = 50;
         maxLoadDate = 30 days;
         owner=msg.sender;
         // TODO: initialize
     }
 
     function buyDex() external payable {
-        uint256 dexAmount = msg.value * rateETHtoDEX;
-       //falta fazer melhor o buy dex
+        uint256 dexAmount = msg.value * rateWEItoDEX;
+        require(totalSupply()>=dexAmount, "not enough DEX for that buy");
+        _transfer(address(this),msg.sender,dexAmount);
+
     }
 
     function sellDex(uint256 dexAmount) external {
         require(balanceOf(msg.sender) >= dexAmount, "Insufficient DEX balance");
-        uint256 ethAmount = dexAmount / rateETHtoDEX;
-        payable(address(this)).transfer(dexAmount);
-        payable(msg.sender).transfer(ethAmount);
+        uint256 weiAmount = dexAmount / rateWEItoDEX;
+        _transfer(msg.sender, address(this), dexAmount);
     }
 
     function loan(uint256 dexAmount, uint256 deadline) external {
@@ -56,7 +58,7 @@ contract DecentralizedFinance is ERC20{
 
     function setRateEthToDex(uint256 rate) external {
         require(msg.sender==owner);
-        rateETHtoDEX = rate;
+        rateWEItoDEX = rate;
     }
 
     function getDex() public view returns (uint256) {
