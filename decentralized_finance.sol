@@ -37,9 +37,10 @@ contract DecentralizedFinance is ERC20{
     }
 
     function sellDex(uint256 dexAmount) external {
-        require(balanceOf(msg.sender) >= dexAmount, "Insufficient DEX balance");
         uint256 weiAmount = dexAmount / rateWEItoDEX;
+        require(address(this).balance >= weiAmount, "Insufficient ETH balance in the contract");
         _transfer(msg.sender, address(this), dexAmount);
+        payable(msg.sender).transfer(weiAmount);
     }
 
     function loan(uint256 dexAmount, uint256 deadline) external {
