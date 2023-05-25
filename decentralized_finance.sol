@@ -7,7 +7,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 contract DecentralizedFinance is ERC20{
     address owner;
     uint256 rateWEItoDEX;
-    uint256 maxLoadDate;
+    uint256 maxLoanDate;
+    uint256 counter;
     struct Loan {         
         uint256 deadline;         
         uint256 amountEth;         
@@ -21,11 +22,13 @@ contract DecentralizedFinance is ERC20{
     mapping(address => uint256) public numTokensPerWallet;
     event loanCreated(address indexed borrower, uint256 amount, uint256 deadline);
 
+
     constructor() ERC20("DEX", "DEX") {
         _mint(address(this), 10**30);
         rateWEItoDEX = 50;
-        maxLoadDate = 30 days;
+        maxLoanDate = 2592000 seconds; // 30 days
         owner=msg.sender;
+        counter = 0;
         // TODO: initialize
     }
 
@@ -44,17 +47,30 @@ contract DecentralizedFinance is ERC20{
     }
 
     function loan(uint256 dexAmount, uint256 deadline) external {
-        // TODO: implement this
-
-        //emit loanCreated(msg.sender, loanAmount, deadline);
+        require(balanceOf(msg.sender)>=dexAmount);
+        require(deadline<=maxLoanDate);
+        uint256 interestRate = rateWEItoDEX + (5*(deadline/86400)); // Interest rate will decrease the value of dex by each day that the loan is created;
+        uint256 loanAmount = dexAmount/interestRate;
+        Loan memory loanAux;
+        loanAux.amountEth=loanAmount;
+        loanAux.borrower=msg.sender;
+        loanAux.deadline=deadline;
+        loanAux.lender=address(this);
+        loanAux.isBaseNft=false;
+        loans[counter] = loanAux;
+        counter++;
+        emit loanCreated(msg.sender, loanAmount, deadline);
+        _transfer(msg.sender, address(this), dexAmount);
+        payable(msg.sender).transfer(loanAmount/2);
     }
 
-    function returnLoan(uint256 ethAmount) external {
-        // TODO: implement this
+    function returnLoan(uint256 loanId, uint256 ethAmount) external {
+        
+        
     }
 
     function getEthTotalBalance() public view returns (uint256) {
-        // TODO: implement this
+       return address(this).balance;
     }
 
     function setRateEthToDex(uint256 rate) external {
@@ -81,12 +97,12 @@ contract DecentralizedFinance is ERC20{
     }
 
     function checkLoan(uint256 loanId) external {
-       require(msg.sender == owner, "Only the contract owner can check the loan");
+       //require(msg.sender == owner, "Only the contract owner can check the loan");
 
         Loan storage loan = loans[loanId];
         require(loan.borrower != address(0), "Loan does not exist");
 
-        if (block.timestamp > loan.deadline) {
+        if (block.timestamp > loan.deadline) {  // temos de ver como fazemos a validação de tempo
             // Loan repayment deadline has passed
             if (balanceOf(loan.borrower) >= loan.amountEth) {
                 // Borrower has enough DEX tokens to repay the loan
