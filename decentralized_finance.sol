@@ -81,6 +81,23 @@ contract DecentralizedFinance is ERC20{
     }
 
     function checkLoan(uint256 loanId) external {
-        // TODO: implement this
+       require(msg.sender == owner, "Only the contract owner can check the loan");
+
+        Loan storage loan = loans[loanId];
+        require(loan.borrower != address(0), "Loan does not exist");
+
+        if (block.timestamp > loan.deadline) {
+            // Loan repayment deadline has passed
+            if (balanceOf(loan.borrower) >= loan.amountEth) {
+                // Borrower has enough DEX tokens to repay the loan
+                // Punish the borrower by transferring the loan amount from the borrower's address to the contract owner
+                _transfer(loan.borrower, owner, loan.amountEth);
+            } else {
+                // Borrower does not have enough DEX tokens to repay the loan
+                // Take necessary steps to punish the borrower (e.g., flag the loan as defaulted, initiate a penalty, etc.)
+                // Add your custom punishment logic here
+            }
+        }
+
     }
 }
