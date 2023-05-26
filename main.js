@@ -1,12 +1,12 @@
 const web3 = new Web3(window.ethereum);
 
 // the part is related to the DecentralizedFinance smart contract
-const defi_contractAddress = " contract-address ";
+const defi_contractAddress = "0xA9921E85494EF7aF77570E71a5d185CbeB8400F8";
 import { defi_abi } from "./abi_decentralized_finance.js";
 const defi_contract = new web3.eth.Contract(defi_abi, defi_contractAddress);
 
 // the part is related to the the SimpleNFT smart contract
-const nft_contractAddress = " contract-address ";
+const nft_contractAddress = "0x6Be201FB7a6a5392282787a6A948753f2D948Be6";
 import { nft_abi } from "./abi_nft.js";
 const nft_contract = new web3.eth.Contract(nft_abi, nft_contractAddress);
 
@@ -38,7 +38,20 @@ async function checkLoanStatus() {
 }
 
 async function buyDex() {
-    // TODO: implement this
+    const fromAddress = (await window.ethereum.request({
+        method: "eth_accounts",
+    }))[0];
+    try {
+        await defi_contract.methods.buyDex().send({
+            from: fromAddress,
+            value: web3.utils.toWei("0.001", "ether"),
+        });
+        console.log("DEX bought successfully");
+    } catch (error) {
+        console.error("Error buying DEX:", error);
+    }
+    
+    await defi_contract.methods.buyDex();
 }
 
 async function getDex() {
@@ -89,10 +102,6 @@ async function checkLoan() {
     // TODO: implement this
 }
 
-async function listenToLoanCreation() {
-    // TODO: implement this
-}
-
 async function getAllTokenURIs() {
     // TODO: implement this
 }
@@ -112,6 +121,6 @@ window.loanByNft = loanByNft;
 window.checkLoan = checkLoan;
 window.listenToLoanCreation = listenToLoanCreation;
 window.getAvailableNfts = getAvailableNfts;
-windows.getTotalBorrowedAndNotPaidBackEth = getTotalBorrowedAndNotPaidBackEth;
-windows.checkLoanStatus = checkLoanStatus;
-windows.getAllTokenURIs = getAllTokenURIs;
+window.getTotalBorrowedAndNotPaidBackEth = getTotalBorrowedAndNotPaidBackEth;
+window.checkLoanStatus = checkLoanStatus;
+window.getAllTokenURIs = getAllTokenURIs;
