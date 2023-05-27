@@ -664,11 +664,11 @@
 			]
 		},
 		"decentralized_finance.sol": {
-			"keccak256": "0x32f824c80951dc59e0a44e924daa921782981cba6f0cf0e675ac8e78deb857a8",
+			"keccak256": "0x40c37436b8409235913ea73e4da4885b341cee8ea1b39af4a39d0712a469042f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1f3ae8bdb5042b00d5d2e20c5ecf112825350e6c7e2e60cd215c258b2ee74892",
-				"dweb:/ipfs/QmZnNns4gYY6aa1wvp1rn3VytoY87X7ziqesYXz1anuNHB"
+				"bzz-raw://afeec3d8fe1978ebc90e440dfa63dceb254857045bceb0b781ce4d63beecdb8c",
+				"dweb:/ipfs/QmfXQHpGh2QqRbJDUYoYtprqKDDJ1UHcHFXSZrXQpnFkSH"
 			]
 		}
 	},

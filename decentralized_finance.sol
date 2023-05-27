@@ -30,7 +30,6 @@ contract DecentralizedFinance is ERC20{
         maxLoanDate = 2592000 seconds; // 30 days
         owner=msg.sender;
         counter = 0;
-        // TODO: initialize
     }
 
     function buyDex() external payable {
@@ -76,6 +75,9 @@ contract DecentralizedFinance is ERC20{
         loans[loanId] = loanAux;
         _transfer(address(this), msg.sender, dexAmountWithInterest);
         if (ethAmountLeft == 0){
+            if(loans[loanId].isBaseNft){
+                loans[loanId].nftContract.safeTransferFrom(loans[loanId].lender, loans[loanId].borrower, loans[loanId].nftId);
+            }
             delete loans[loanId];
         }
     }
@@ -94,35 +96,56 @@ contract DecentralizedFinance is ERC20{
     }
 
     function makeLoanRequestByNft(IERC721 nftContract, uint256 nftId, uint256 loanAmount, uint256 deadline) external {
-        // TODO: implement this
+       Loan memory loanAux;
+        loanAux.amountEth=loanAmount;
+        loanAux.borrower=msg.sender;
+        loanAux.deadline=deadline;
+        loanAux.lender=address(0);
+        loanAux.isBaseNft=true;
+        loanAux.nftContract = nftContract;
+        loanAux.nftId = nftId;
+        loanAux.dateCreated = block.timestamp;
+        loans[counter] = loanAux;
+        counter++;
+        nftContract.safeTransferFrom(msg.sender, address(this), nftId);
     }
 
     function cancelLoanRequestByNft(IERC721 nftContract, uint256 nftId) external {
-        // TODO: implement this
+        for (uint256 i = 0; i<counter; i++) 
+        {
+            Loan storage loanAux = loans[i];
+            if(msg.sender==loanAux.borrower){
+                if(nftContract == loanAux.nftContract){
+                    if(nftId == loanAux.nftId){
+                        require(nftContract.ownerOf(nftId)==address(this));
+                        delete loans[counter];
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     function loanByNft(IERC721 nftContract, uint256 nftId) external {
-        // TODO: implement this
+        for (uint256 i = 0; i<counter; i++) {
+            if(loans[i].nftContract == nftContract && loans[i].nftId == nftId){
+                require(msg.sender != loans[i].borrower);
+                require(balanceOf(msg.sender) >= loans[i].amountEth);
+                nftContract.transferFrom(address(this), msg.sender, nftId);
+                uint256 loanAmount = loans[i].amountEth*rateWEItoDEX;
+                _transfer(msg.sender, loans[i].borrower, loanAmount);
+                emit loanCreated(msg.sender, loanAmount, loans[i].deadline);
+            }
+        }
 
-       // emit loanCreated(msg.sender, loanAmount, deadline);
+    
     }
 
     function checkLoan(uint256 loanId) external {
-       //require(msg.sender == owner, "Only the contract owner can check the loan");
-
-        Loan storage loan = loans[loanId];
-        require(loan.borrower != address(0), "Loan does not exist");
-
-        if (loan.dateCreated+loan.deadline > block.timestamp) {
-            if (balanceOf(loan.borrower) >= loan.amountEth) {
-                // Borrower has enough DEX tokens to repay the loan
-                // Punish the borrower by transferring the loan amount from the borrower's address to the contract owner
-                _transfer(loan.borrower, owner, loan.amountEth);
-            } else {
-                // Borrower does not have enough DEX tokens to repay the loan
-                // Take necessary steps to punish the borrower (e.g., flag the loan as defaulted, initiate a penalty, etc.)
-                // Add your custom punishment logic here
-            }
+        Loan storage loanAux = loans[loanId];
+        require(msg.sender == loans[loanId].lender, "You are not the owner");
+        if (loanAux.dateCreated+loanAux.deadline > block.timestamp) {
+            _transfer(msg.sender, address(this), loans[loanId].amountEth*rateWEItoDEX);
         }
 
     }
