@@ -9,7 +9,8 @@ contract DecentralizedFinance is ERC20{
     uint256 rateWEItoDEX;
     uint256 maxLoanDate;
     uint256 counter;
-    struct Loan {         
+    struct Loan {
+        uint256 dateCreated; 
         uint256 deadline;         
         uint256 amountEth;         
         address lender;         
@@ -57,6 +58,7 @@ contract DecentralizedFinance is ERC20{
         loanAux.deadline=deadline;
         loanAux.lender=address(this);
         loanAux.isBaseNft=false;
+        loanAux.dateCreated = block.timestamp;
         loans[counter] = loanAux;
         counter++;
         emit loanCreated(msg.sender, loanAmount, deadline);
@@ -64,9 +66,18 @@ contract DecentralizedFinance is ERC20{
         payable(msg.sender).transfer(loanAmount/2);
     }
 
-    function returnLoan(uint256 loanId, uint256 ethAmount) external {
-        
-        
+    function returnLoan(uint256 loanId) external payable {
+        Loan storage loanAux = loans[loanId];
+        uint256 interestRate = rateWEItoDEX + (5*(loanAux.deadline/86400)); // Interest rate will decrease the value of dex by each day that the loan is created;
+        uint256 dexAmountWithInterest = msg.value*interestRate;
+        require(loanAux.amountEth >= msg.value,"You returning more then the loan accepts");
+        uint256 ethAmountLeft = loanAux.amountEth-msg.value;
+        loanAux.amountEth = ethAmountLeft;
+        loans[loanId] = loanAux;
+        _transfer(address(this), msg.sender, dexAmountWithInterest);
+        if (ethAmountLeft == 0){
+            delete loans[loanId];
+        }
     }
 
     function getEthTotalBalance() public view returns (uint256) {
@@ -102,8 +113,7 @@ contract DecentralizedFinance is ERC20{
         Loan storage loan = loans[loanId];
         require(loan.borrower != address(0), "Loan does not exist");
 
-        if (block.timestamp > loan.deadline) {  // temos de ver como fazemos a validação de tempo
-            // Loan repayment deadline has passed
+        if (loan.dateCreated+loan.deadline > block.timestamp) {
             if (balanceOf(loan.borrower) >= loan.amountEth) {
                 // Borrower has enough DEX tokens to repay the loan
                 // Punish the borrower by transferring the loan amount from the borrower's address to the contract owner
