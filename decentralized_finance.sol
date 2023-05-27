@@ -128,7 +128,7 @@ contract DecentralizedFinance is ERC20{
 
     function loanByNft(IERC721 nftContract, uint256 nftId) external {
         for (uint256 i = 0; i<counter; i++) {
-            if(loans[i].nftContract == nftContract && loans[i].nftId == nftId){
+            if(loans[i].nftContract == nftContract && loans[i].nftId == nftId && loans[i].isBaseNft == true){
                 require(msg.sender != loans[i].borrower);
                 require(balanceOf(msg.sender) >= loans[i].amountEth);
                 nftContract.transferFrom(address(this), msg.sender, nftId);
