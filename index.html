@@ -6,16 +6,98 @@
   <title>Decentralized Finance</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/web3@1.9.0/dist/web3.min.js"></script>
-
 </head>
 
 <body>
-<script src="main.js" type="module"></script>	
-  <button onclick="connectMetaMask()">Connect MetaMask</button>
-  <br />
-  <button onclick="buyDex()">Buy Dex</button>
+  <script src="main.js" type="module"></script>
 
+  <form>
+    <button onclick="connectMetaMask()">Connect MetaMask</button>
+    <br />
 
+    <button onclick="buyDex()">Buy Dex</button>
+    <br />
+
+    <h3>Set ETH to DEX Conversion Rate</h3>
+    <input type="number" id="rateInput" placeholder="Rate" />
+    <button onclick="setRateEthToDex(document.getElementById('rateInput').value)">Set Rate</button>
+    <br />
+
+    <h3>Listen to Loan Creation</h3>
+    <button onclick="listenToLoanCreation()">Listen</button>
+    <br />
+
+    <h3>Check Loan Status</h3>
+    <input type="text" id="loanIdInput" placeholder="Loan ID" />
+    <button onclick="checkLoanStatus(document.getElementById('loanIdInput').value)">Check Status</button>
+    <br />
+
+    <button onclick="getDex()">Get Dex</button>
+    <br />
+
+    <h3>Sell Dex</h3>
+    <input type="number" id="sellDexInput" placeholder="Dex Amount" />
+    <button onclick="sellDex(document.getElementById('sellDexInput').value)">Sell Dex</button>
+    <br />
+
+    <h3>Create Loan</h3>
+    <input type="number" id="loanAmountInput" placeholder="Loan Amount" />
+    <input type="number" id="loanDeadlineInput" placeholder="Loan Deadline" />
+    <button
+      onclick="loan(document.getElementById('loanAmountInput').value, document.getElementById('loanDeadlineInput').value)">Create
+      Loan</button>
+    <br />
+
+    <h3>Return Loan</h3>
+    <input type="number" id="returnLoanIdInput" placeholder="Loan ID" />
+    <button onclick="returnLoan(document.getElementById('returnLoanIdInput').value)">Return Loan</button>
+    <br />
+
+    <button onclick="getEthTotalBalance()">Get ETH Total Balance</button>
+    <br />
+
+    <button onclick="getRateEthToDex()">Get ETH to DEX Conversion Rate</button>
+    <br />
+
+    <button onclick="getAvailableNfts()">Get Available NFTs</button>
+    <br />
+
+    <button onclick="getTotalBorrowedAndNotPaidBackEth()">Get Total Borrowed and Not Paid Back ETH</button>
+    <br />
+
+    <h3>Make Loan Request by NFT</h3>
+    <input type="text" id="nftAddressInput" placeholder="NFT Address" />
+    <input type="number" id="nftIdInput" placeholder="NFT ID" />
+    <input type="number" id="loanAmountNftInput" placeholder="Loan Amount" />
+    <input type="number" id="loanDeadlineNftInput" placeholder="Loan Deadline" />
+    <button
+      onclick="makeLoanRequestByNft(document.getElementById('nftAddressInput').value, document.getElementById('nftIdInput').value, document.getElementById('loanAmountNftInput').value, document.getElementById('loanDeadlineNftInput').value)">Make
+      Loan Request</button>
+    <br />
+
+    <h3>Cancel Loan Request by NFT</h3>
+    <input type="text" id="nftAddressCancelInput" placeholder="NFT Address" />
+    <input type="number" id="nftIdCancelInput" placeholder="NFT ID" />
+    <button
+      onclick="cancelLoanRequestByNft(document.getElementById('nftAddressCancelInput').value, document.getElementById('nftIdCancelInput').value)">Cancel
+      Loan Request</button>
+    <br />
+
+    <h3>Loan by NFT</h3>
+    <input type="text" id="nftAddressLoanInput" placeholder="NFT Address" />
+    <input type="number" id="nftIdLoanInput" placeholder="NFT ID" />
+    <button
+      onclick="loanByNft(document.getElementById('nftAddressLoanInput').value, document.getElementById('nftIdLoanInput').value)">Loan
+      by NFT</button>
+    <br />
+
+    <h3>Check Loan</h3>
+    <input type="number" id="checkLoanIdInput" placeholder="Loan ID" />
+    <button onclick="checkLoan(document.getElementById('checkLoanIdInput').value)">Check Loan</button>
+    <br />
+
+    <button onclick="getAllTokenURIs()">Get All Token URIs</button>
+  </form>
 </body>
-</html>
 
+</html>
