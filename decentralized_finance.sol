@@ -21,7 +21,7 @@ contract DecentralizedFinance is ERC20{
         }
     mapping(uint256 => Loan) public loans;
     mapping(address => uint256) public numTokensPerWallet;
-    event loanCreated(address indexed borrower, uint256 amount, uint256 deadline);
+    event loanCreated(uint256 id ,address indexed borrower, uint256 amount, uint256 deadline);
 
 
     constructor() ERC20("DEX", "DEX") {
@@ -60,7 +60,7 @@ contract DecentralizedFinance is ERC20{
         loanAux.dateCreated = block.timestamp;
         loans[counter] = loanAux;
         counter++;
-        emit loanCreated(msg.sender, loanAmount, deadline);
+        emit loanCreated(counter,msg.sender, loanAmount, deadline);
         _transfer(msg.sender, address(this), dexAmount);
         payable(msg.sender).transfer(loanAmount/2);
         return counter - 1;
@@ -135,7 +135,7 @@ contract DecentralizedFinance is ERC20{
                 nftContract.transferFrom(address(this), msg.sender, nftId);
                 uint256 loanAmount = loans[i].amountEth*rateWEItoDEX;
                 _transfer(msg.sender, loans[i].borrower, loanAmount);
-                emit loanCreated(msg.sender, loanAmount, loans[i].deadline);
+                emit loanCreated(counter, msg.sender, loanAmount, loans[i].deadline);
             }
         }
 
