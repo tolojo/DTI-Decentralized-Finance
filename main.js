@@ -253,7 +253,7 @@ async function makeLoanRequestByNft(nftContract, nftId, dexAmount, deadline) {
         method: "eth_accounts",
     }))[0];
     const result = await defi_contract.methods.makeLoanRequestByNft(nftContract, nftId, dexAmount, deadline)
-        .call({
+        .send({
             from: fromAddress,
             gas: 3000000,
             gasPrice: '20000000000'
