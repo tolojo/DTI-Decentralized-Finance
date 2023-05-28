@@ -1,14 +1,14 @@
 const web3 = new Web3(window.ethereum);
 
 // DecentralizedFinance smart contract
-const defi_contractAddress = "0x358AA13c52544ECCEF6B0ADD0f801012ADAD5eE3";
+const defi_contractAddress = "0x934685D2c44De5938655f7Ca32A662f032dB2f48";
 import {
     defi_abi
 } from "./abi_decentralized_finance.js";
 const defi_contract = new web3.eth.Contract(defi_abi, defi_contractAddress);
 
 // SimpleNFT smart contract
-const nft_contractAddress = "0x6Be201FB7a6a5392282787a6A948753f2D948Be6";
+const nft_contractAddress = "0x2264C29D03BbeAa33b864f0b5eDb03c75779D3C9";
 import {
     nft_abi
 } from "./abi_nft.js";
@@ -57,12 +57,20 @@ async function listenToLoanCreation() {
 }
 
 async function checkLoanStatus(loanId) {
-    try {
-        const result = await defi_contract.methods.checkLoan(loanId).call();
-        console.log("Loan status:", result);
-    } catch (error) {
-        console.error("Error checking loan status:", error);
-    }
+
+const fromAddress = (await window.ethereum.request({
+        method: "eth_accounts",
+    }))[0];
+
+    const result = await defi_contract.methods.checkLoan(loanId)
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('Loan status:', result);
+  })
+  .catch(error => {
+
+    console.error('Error checking loan status:', error);
+  });
 }
 
 async function buyDex() {
@@ -86,14 +94,17 @@ async function getDex() {
     const fromAddress = (await window.ethereum.request({
         method: "eth_accounts",
     }))[0];
-    try {
-        const result = await defi_contract.methods.getDex().call({
-            from: fromAddress,
-        });
-        console.log("DEX balance:", result);
-    } catch (error) {
-        console.error("Error getting DEX balance:", error);
-    }
+
+    const result = await defi_contract.methods.getDex()
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('getDex result:', result);
+  })
+  .catch(error => {
+
+    console.error('getDex error:', error);
+  });
+
 }
 
 async function sellDex(dexAmount) {
@@ -114,64 +125,96 @@ async function loan(dexAmount, deadline) {
     const fromAddress = (await window.ethereum.request({
         method: "eth_accounts",
     }))[0];
-    try {
-        const loan = await defi_contract.methods.loan(dexAmount, deadline).send({
-            from: fromAddress,
-        });
-        console.log("Loan id:" + parseInt(loan) + " created successfully");
-    } catch (error) {
-        console.error("Error creating loan:", error);
-    }
+    const result = await defi_contract.methods.loan(dexAmount, deadline).send({ 
+    from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('Loan created successfully, id:', result, result.events.loanCreated.returnValues[1]);
+  })
+  .catch(error => {
+
+    console.error('Error creating loan:', error);
+  });
 }
 
 async function returnLoan(loanId) {
     const fromAddress = (await window.ethereum.request({
         method: "eth_accounts",
     }))[0];
-    try {
-        await defi_contract.methods.returnLoan(loanId).send({
-            from: fromAddress,
-        });
-        console.log("Loan returned successfully");
-    } catch (error) {
-        console.error("Error returning loan:", error);
-    }
+    const result = await defi_contract.methods.returnLoan(loanId).send({ 
+    from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('Loan returned successfully:', result);
+  })
+  .catch(error => {
+
+    console.error('Error returning loan:', error);
+  });
+ 
 }
 
 async function getEthTotalBalance() {
-    try {
-        const result = await defi_contract.methods.getEthTotalBalance().call();
-        console.log("ETH total balance:", result);
-    } catch (error) {
-        console.error("Error getting ETH total balance:", error);
-    }
+    const fromAddress = (await window.ethereum.request({
+        method: "eth_accounts",
+    }))[0];
+    
+    const result = await defi_contract.methods.getEthTotalBalance()
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('ETH total balance:', result);
+  })
+  .catch(error => {
+
+    console.error('Error getting ETH total balance:', error);
+  });
 }
 
 async function getRateEthToDex() {
-    try {
-        const result = await defi_contract.methods.getRateEthToDex().call();
-        console.log("ETH to DEX conversion rate:", result);
-    } catch (error) {
-        console.error("Error getting ETH to DEX conversion rate:", error);
-    }
+    const fromAddress = (await window.ethereum.request({
+        method: "eth_accounts",
+    }))[0];
+    
+    const result = await defi_contract.methods.getRateEthToDex()
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('ETH to DEX conversion rate:', result);
+  })
+  .catch(error => {
+
+    console.error('Error getting ETH to DEX conversion rate:', error);
+  });
 }
 
 async function getAvailableNfts() {
-    try {
-        const result = await defi_contract.methods.getAvailableNfts().call();
-        console.log("Available NFTs:", result);
-    } catch (error) {
-        console.error("Error getting available NFTs:", error);
-    }
+//TODO
+    const fromAddress = (await window.ethereum.request({
+        method: "eth_accounts",
+    }))[0];
+    
+    const result = await defi_contract.methods.getAvailableNfts()
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('Available NFTs:', result);
+  })
+  .catch(error => {
+
+    console.error('Error getting available NFTs:', error);
+  });
+
 }
 
 async function getTotalBorrowedAndNotPaidBackEth() {
-    try {
-        const result = await defi_contract.methods.getTotalBorrowedAndNotPaidBackEth().call();
-        console.log("Total borrowed and not paid back ETH:", result);
-    } catch (error) {
-        console.error("Error getting total borrowed and not paid back ETH:", error);
-    }
+    const fromAddress = (await window.ethereum.request({
+        method: "eth_accounts",
+    }))[0];
+    const result = await defi_contract.methods.getTotalBorrowedAndNotPaidBackEth()
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('Total borrowed and not paid back ETH:', result);
+  })
+  .catch(error => {
+
+    console.error('Error getting total borrowed and not paid back ETH:', error);
+  });
 }
 
 async function makeLoanRequestByNft(nftId, dexAmount, deadline) {
@@ -217,21 +260,34 @@ async function loanByNft(nftId, dexAmount, deadline) {
 }
 
 async function checkLoan(loanId) {
-    try {
-        const result = await defi_contract.methods.checkLoan(loanId).call();
-        console.log("Loan status:", result);
-    } catch (error) {
-        console.error("Error checking loan:", error);
-    }
+   const fromAddress = (await window.ethereum.request({
+	method: "eth_accounts",
+    }))[0];
+    
+    const result = await defi_contract.methods.checkLoan(loanId)
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('Loan status:', result);
+  })
+  .catch(error => {
+
+    console.error('Error checking loan:', error);
+  });
 }
 
 async function getAllTokenURIs() {
-    try {
-        const result = await nft_contract.methods.getAllTokenURIs().call();
-        console.log("All Token URIs:", result);
-    } catch (error) {
-        console.error("Error getting all token URIs:", error);
-    }
+   const fromAddress = (await window.ethereum.request({
+	method: "eth_accounts",
+    }))[0];
+    
+    const result = await defi_contract.methods.getAllTokenURIs()
+  .call({ from: fromAddress, gas: 3000000, gasPrice: '20000000000' })
+  .then(result => {
+    console.log('All Token URIs:', result);
+  })
+  .catch(error => {
+    console.error('Error getting all token URIs:', error);
+  });
 }
 
 window.connectMetaMask = connectMetaMask;
