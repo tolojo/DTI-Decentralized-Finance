@@ -1,14 +1,14 @@
 const web3 = new Web3(window.ethereum);
 
 // DecentralizedFinance smart contract
-const defi_contractAddress = "0xf84993Db993CE36C473F52e778f48113F848E3D1";
+const defi_contractAddress = "0xFC2Fed8EEc908F47058681249A206D1bA269c8c1";
 import {
     defi_abi
 } from "./abi_decentralized_finance.js";
 const defi_contract = new web3.eth.Contract(defi_abi, defi_contractAddress);
 
 // SimpleNFT smart contract
-const nft_contractAddress = "0x2264C29D03BbeAa33b864f0b5eDb03c75779D3C9";
+const nft_contractAddress = "0xB042c10d169B0013B79E9eD105930E0d744EdcA7";
 import {
     nft_abi
 } from "./abi_nft.js";
@@ -248,18 +248,23 @@ async function getTotalBorrowedAndNotPaidBackEth() {
         });
 }
 
-async function makeLoanRequestByNft(nftId, dexAmount, deadline) {
+async function makeLoanRequestByNft(nftContract,nftId, dexAmount, deadline) {
     const fromAddress = (await window.ethereum.request({
         method: "eth_accounts",
     }))[0];
-    try {
-        await defi_contract.methods.makeLoanRequestByNft(nftId, dexAmount, deadline).send({
-            from: fromAddress,
-        });
-        console.log("Loan request created successfully");
-    } catch (error) {
-        console.error("Error creating loan request:", error);
-    }
+    const result = await defi_contract.methods.makeLoanRequestByNft(nftContract,nftId, dexAmount, deadline)
+    .call({
+        from: fromAddress,
+        gas: 3000000,
+        gasPrice: '20000000000'
+    })
+    .then(result => {
+        console.log('Total borrowed and not paid back ETH:', result);
+    })
+    .catch(error => {
+        console.error('Error getting total borrowed and not paid back ETH:', error);
+    });
+    
 }
 
 async function cancelLoanRequestByNft(nftId) {
