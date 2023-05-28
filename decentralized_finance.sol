@@ -146,7 +146,13 @@ contract DecentralizedFinance is ERC20{
         Loan storage loanAux = loans[loanId];
         require(msg.sender == loans[loanId].lender, "You are not the owner");
         if (loanAux.dateCreated+loanAux.deadline > block.timestamp) {
-            _transfer(msg.sender, address(this), loans[loanId].amountEth*rateWEItoDEX);
+            uint256 dexBalanceBorrower = balanceOf(loans[loanId].borrower);
+            if (dexBalanceBorrower > loans[loanId].amountEth*rateWEItoDEX){
+                _transfer(msg.sender, address(this), loans[loanId].amountEth*rateWEItoDEX);
+            }
+            else{
+                _transfer(msg.sender, address(this), dexBalanceBorrower);
+            }
             delete loans[loanId];
         }
 

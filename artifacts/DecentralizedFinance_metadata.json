@@ -254,6 +254,32 @@
 				"type": "function"
 			},
 			{
+				"inputs": [],
+				"name": "getRateEthToDex",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalBorrowedAndNotPaidBackEth",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -291,7 +317,13 @@
 					}
 				],
 				"name": "loan",
-				"outputs": [],
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			},
@@ -664,11 +696,11 @@
 			]
 		},
 		"decentralized_finance.sol": {
-			"keccak256": "0x40c37436b8409235913ea73e4da4885b341cee8ea1b39af4a39d0712a469042f",
+			"keccak256": "0x5b4d798ec6dd5c9e1ac4bafcb30465b72521efd233621a090b3375b1fbca50c1",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://afeec3d8fe1978ebc90e440dfa63dceb254857045bceb0b781ce4d63beecdb8c",
-				"dweb:/ipfs/QmfXQHpGh2QqRbJDUYoYtprqKDDJ1UHcHFXSZrXQpnFkSH"
+				"bzz-raw://da64da04dfa721ab57c5e0b558de87bd956962306e9bd0d1a1808b360f1de7cd",
+				"dweb:/ipfs/QmcWt2dNzJp3XHNjeEEFNa3WdJoyq8LXcNnCFNofvE3imq"
 			]
 		}
 	},
