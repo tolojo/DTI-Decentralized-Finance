@@ -1,13 +1,13 @@
-const web3 = new web3(window.ethereum);
+const web3 = new Web3(window.ethereum);
 
-// the part is related to the DecentralizedFinance smart contract
-const defi_contractAddress = "0xA9921E85494EF7aF77570E71a5d185CbeB8400F8";
+// DecentralizedFinance smart contract
+const defi_contractAddress = "0x358AA13c52544ECCEF6B0ADD0f801012ADAD5eE3";
 import {
     defi_abi
 } from "./abi_decentralized_finance.js";
 const defi_contract = new web3.eth.Contract(defi_abi, defi_contractAddress);
 
-// the part is related to the the SimpleNFT smart contract
+// SimpleNFT smart contract
 const nft_contractAddress = "0x6Be201FB7a6a5392282787a6A948753f2D948Be6";
 import {
     nft_abi
@@ -27,6 +27,7 @@ async function connectMetaMask() {
     } else {
         console.error("MetaMask not found. Please install the MetaMask extension.");
     }
+    
 }
 
 async function setRateEthToDex(rate) {
@@ -114,10 +115,10 @@ async function loan(dexAmount, deadline) {
         method: "eth_accounts",
     }))[0];
     try {
-        await defi_contract.methods.loan(dexAmount, deadline).send({
+        const loan = await defi_contract.methods.loan(dexAmount, deadline).send({
             from: fromAddress,
         });
-        console.log("Loan created successfully");
+        console.log("Loan id:" + parseInt(loan) + " created successfully");
     } catch (error) {
         console.error("Error creating loan:", error);
     }

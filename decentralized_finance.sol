@@ -46,7 +46,7 @@ contract DecentralizedFinance is ERC20{
         payable(msg.sender).transfer(weiAmount);
     }
 
-    function loan(uint256 dexAmount, uint256 deadline) external {
+    function loan(uint256 dexAmount, uint256 deadline) external returns (uint256) {
         require(balanceOf(msg.sender)>=dexAmount);
         require(deadline<=maxLoanDate);
         uint256 interestRate = rateWEItoDEX + (5*(deadline/86400)); // Interest rate will decrease the value of dex by each day that the loan is created;
@@ -63,6 +63,7 @@ contract DecentralizedFinance is ERC20{
         emit loanCreated(msg.sender, loanAmount, deadline);
         _transfer(msg.sender, address(this), dexAmount);
         payable(msg.sender).transfer(loanAmount/2);
+        return counter - 1;
     }
 
     function returnLoan(uint256 loanId) external payable {
@@ -150,4 +151,9 @@ contract DecentralizedFinance is ERC20{
         }
 
     }
+
+    function getRateEthToDex() public view returns (uint256) {
+        return rateWEItoDEX;
+    }
 }
+
