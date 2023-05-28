@@ -248,38 +248,40 @@ async function getTotalBorrowedAndNotPaidBackEth() {
         });
 }
 
-async function makeLoanRequestByNft(nftContract,nftId, dexAmount, deadline) {
+async function makeLoanRequestByNft(nftContract, nftId, dexAmount, deadline) {
     const fromAddress = (await window.ethereum.request({
         method: "eth_accounts",
     }))[0];
-    const result = await defi_contract.methods.makeLoanRequestByNft(nftContract,nftId, dexAmount, deadline)
-    .call({
-        from: fromAddress,
-        gas: 3000000,
-        gasPrice: '20000000000'
-    })
-    .then(result => {
-        console.log('Total borrowed and not paid back ETH:', result);
-    })
-    .catch(error => {
-        console.error('Error getting total borrowed and not paid back ETH:', error);
-    });
-    
+    const result = await defi_contract.methods.makeLoanRequestByNft(nftContract, nftId, dexAmount, deadline)
+        .call({
+            from: fromAddress,
+            gas: 3000000,
+            gasPrice: '20000000000'
+        })
+        .then(result => {
+            console.log('Total borrowed and not paid back ETH:', result);
+        })
+        .catch(error => {
+            console.error('Error getting total borrowed and not paid back ETH:', error);
+        });
+
 }
 
 async function cancelLoanRequestByNft(nftId) {
     const fromAddress = (await window.ethereum.request({
         method: "eth_accounts",
     }))[0];
-    try {
-        await defi_contract.methods.cancelLoanRequestByNft(nftId).send({
-            from: fromAddress,
-        });
-        console.log("Loan request canceled successfully");
-    } catch (error) {
-        console.error("Error canceling loan request:", error);
-    }
+    const result = await defi_contract.methods.cancelLoanRequestByNft(nftId).send({
+        from: fromAddress,
+        gas: 3000000,
+        gasPrice: '20000000000'
+    }).then(result => {
+        console.log('Loan request canceled successfully', result);
+    }).catch(error => {
+        console.error('Error canceling loan request:', error);
+    });
 }
+
 
 async function loanByNft(nftId, dexAmount, deadline) {
     const fromAddress = (await window.ethereum.request({
